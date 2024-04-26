@@ -1,0 +1,10 @@
+matplotlib
+numpy
+pandas
+torch
+torchtext
+tqdm
+portalocker
+transformers
+datasets
+torchdata
