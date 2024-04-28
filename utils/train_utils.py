@@ -1,4 +1,4 @@
-from quantization.binarize import IRLinear
+from quantization.binarize import OptimizedBinarization
 import torch.nn as nn
 
 class AverageMeter(object):
@@ -50,13 +50,13 @@ def change_t(model, t_value):
     
     for name, layer in model.named_children():
         # change layer's t value
-        if type(layer) == IRLinear:
+        if type(layer) == OptimizedBinarization:
             model.__dict__["_modules"][name].t = t_value
             
         else:
             layer_types = [type(layer) for layer in layer.modules()]
 
-            if IRLinear in layer_types:
+            if OptimizedBinarization in layer_types:
                 change_t(layer, t_value)
     return
 

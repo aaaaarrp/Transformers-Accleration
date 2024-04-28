@@ -39,7 +39,7 @@ Inside this directory, `transformer.py` - definition of baseline transformer mod
 
 Inside this directory, `constants.py` - some pre-defined constants for model definition and training; `data_utils.py` - functions to construct dataset; `train_utils.py` - help functions used in training; `training.py` - core training codes; `check_activation.py` - functions used to compute runtime memory size; `pretrained.py` - functions to load pre-trained model weights; `utils.py` - other help functions
 
-**CHECK CHECK** : check_activation.py and model runtime size
+**TODO :** check_activation.py and model runtime size
  
 **/res**: save models, training logs, test results of different experiments
 
@@ -96,15 +96,13 @@ python3 train_script.py --quant_type quantization --quant_method fully --bit_num
 
 ## Train binarization model
 
-**CHECK CHECK** : Add optimized binarization code with novelty instead of IR net 
-
 Training of binarization model is similar, you should specify argument `--quant_type` as 'binarization' and choose quantize method from ['basic', 'Optimized'] and set as argment `--quant_method`. However, for binarization method, `--bit_num` will not work since every parameter will be set as 1bit. Instead, you can binarize part of the model by specifying argument `--quant_pattern` as one of ['ALL', 'ALL_QK'], which means binarizing all model, all model with only query/key without value respectively.
 
-For example, if you want to train a model using basic binarization and binarize the whole model with QK, you can use command like
+For example, if you want to train a model using our optimized binarization method and binarize the whole model with QK, you can use command like
 
 
 ```
-python3 train_script.py --quant_type binarization --quant_method basic --quant_pattern ALL_QK
+python3 train_script.py --quant_type binarization --quant_method optimized --quant_pattern ALL_QK
 ```
 
 # Experiment and Results
@@ -150,7 +148,7 @@ Then, as we discussed before, we think query and key should be more robust to bi
 
 In our third experiment, we compared our method with baseline, 4 bit Quantized (weights only) and basic binarized model. We compare the accuracy, model size and reduction ratio and highlight the best one. Results are shown below:
 
-<!-- ![avatar](./figures/EXP3.png) -->
+![avatar](./figures/EXP3.png)
 ![avatar](./figures/Table5.png)
 
 We can see that our method not only accelerate convergence, but also having a model size as basic binarized model size. So we have better accuracy and reduction ratio from modified Binarized method. Note that an important advantage of our method is that we do not need pretrained weights anymore, which may accelerate whole training process.

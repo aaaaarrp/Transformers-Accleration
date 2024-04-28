@@ -10,7 +10,7 @@ import argparse
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-def load_bert_weights(path="D://Downloads/pytorch_model.bin"):
+def load_bert_weights(path=".../pytorch_model.bin"):
     # load dataset
     tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
 
@@ -71,6 +71,6 @@ def load_bert_weights(path="D://Downloads/pytorch_model.bin"):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--path", type=str, help="path to your pretrained checkpoint", default="D://Downloads/pytorch_model.bin")
+    parser.add_argument("--path", type=str, help="path to your pretrained checkpoint", default=".../pytorch_model.bin")
     args = parser.parse_args()
     model = load_bert_weights(args.path)

@@ -2,16 +2,19 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import argparse
+import sys
 
 import torch
 from torch import nn
 from torch.optim import Adam, SGD
 from torch.optim.lr_scheduler import MultiStepLR
+from torchinfo import summary
 
 from transformers import AutoTokenizer
 from utils.data_utils import AG_NEWS_DATASET
 from utils.constants import *
 from utils.training import Learner
+from utils.utils import *
 
 from quantization.transformer import Transformer
 from quantization.binarize import binarize
@@ -27,10 +30,10 @@ def create_model(vocab_size, quant_type=None, quant_method=None, bit_num=None, q
     quant_type    - quant type, should be one of [None, 'quantization', 'binarization']
     quant_method  - quant method to use, if quant_type is None, it should also be None
                     For 'quantization', should be one of ['basic', 'fully']
-                    For 'binarization', should be one of ['basic', 'ir']
+                    For 'binarization', should be one of ['basic', 'optimized']
     bit_num       - bit number for each parameter, only works when quant_type is 'quantization'
                     should be one of [8,4,2]
-    quant_pattern - quantization pattern, should be one of ['MHA', 'FFN', 'CLS', 'ALL', 'ALL_QK']
+    quant_pattern - quantization pattern, should be one of ['ALL', 'ALL_QK']
     '''
     # create baseline model for further quantization
     model = Transformer(d_model=BASELINE_MODEL_DIM,
@@ -73,10 +76,10 @@ def create_model(vocab_size, quant_type=None, quant_method=None, bit_num=None, q
     
     # if quant type == 'binarization', we will do binarization on base model
     # bit num should be None
-    # quant pattern should be specified as one of [MHA, FFN, CLS, ALL, ALL_QK]
+    # quant pattern should be specified as one of [ALL, ALL_QK]
     # here all binarization method skip final layer
     elif quant_type == 'binarization':
-        __quant_method__ = ['basic', 'ir']
+        __quant_method__ = ['basic', 'optimized']
         assert quant_method in __quant_method__, f"Unimplemented quantization method, should be one of {__quant_method__}, got '{quant_method}'!"
         assert quant_pattern != None, f"Quant pattern can not be None!"
         assert bit_num is None, f"Bit number should not be specified in binarization, got {bit_num}!"
@@ -100,7 +103,7 @@ if __name__ == '__main__':
                         default=None)
     parser.add_argument("--quant_method", 
                         type=str, help="which specific quantization method to use", 
-                        choices=['basic', 'fully', 'ir'],
+                        choices=['basic', 'fully', 'optimized'],
                         default=None)
     parser.add_argument("--bit_num", 
                         type=int, 
@@ -110,7 +113,7 @@ if __name__ == '__main__':
     parser.add_argument("--quant_pattern", 
                         type=str, 
                         help="which part of transformer to quant", 
-                        choices=['MHA', 'FFN', 'CLS', 'ALL', 'ALL_QK'],
+                        choices=['ALL', 'ALL_QK'],
                         default=None)
     parser.add_argument("--pre_trained", 
                         help="whether to load pre-trained weight", 
@@ -155,7 +158,7 @@ if __name__ == '__main__':
                    'optim': optim,
                    'scheduler': scheduler,
                    'datasets': [train_dl, test_dl],
-                   'epochs': 10,
+                   'epochs': 1,
                    'batch_size': BATCH_SIZE,
                    'exp_name': args.exp_name
                    }
@@ -180,7 +183,7 @@ if __name__ == '__main__':
         print("INFO: Start Training...")
         
     else:
-        print("INFO: Start Latent Training...")
+        print("INFO: Start Training...")
 
     # training
     learner_ag_news = Learner(train_config, ema=(args.quant_method == 'fully'),  ir=(args.quant_method == 'ir'))
