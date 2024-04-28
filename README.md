@@ -37,9 +37,7 @@ Inside this directory, `transformer.py` - definition of baseline transformer mod
  
 **/utils**: util functions used in model training and other experiments
 
-Inside this directory, `constants.py` - some pre-defined constants for model definition and training; `data_utils.py` - functions to construct dataset; `train_utils.py` - help functions used in training; `training.py` - core training codes; `check_activation.py` - functions used to compute runtime memory size; `pretrained.py` - functions to load pre-trained model weights; `utils.py` - other help functions
-
-**TODO :** check_activation.py and model runtime size
+Inside this directory, `constants.py` - some pre-defined constants for model definition and training; `data_utils.py` - functions to construct dataset; `train_utils.py` - help functions used in training; `training.py` - core training codes; `check_runtime.py` - functions used to compute runtime memory size; `pretrained.py` - functions to load pre-trained model weights; `utils.py` - other help functions
  
 **/res**: save models, training logs, test results of different experiments
 
