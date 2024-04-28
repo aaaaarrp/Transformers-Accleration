@@ -8,3 +8,5 @@ portalocker
 transformers
 datasets
 torchdata
+psutil
+torchinfo

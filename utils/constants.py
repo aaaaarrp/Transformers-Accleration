@@ -18,3 +18,5 @@ PRETRAINED_WEIGHT_PATH = './data/pretrained_weights.pth'
 BOS_TOKEN = "<s>"
 EOS_TOKEN = "</s>"
 PAD_TOKEN = "<pad>"
+
+MAX_SEQ_LEN = 256

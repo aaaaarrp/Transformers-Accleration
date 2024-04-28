@@ -91,6 +91,7 @@ def create_model(vocab_size, quant_type=None, quant_method=None, bit_num=None, q
         
         print(f"INFO: Creating binarized transformer with using {quant_method} binarize algorithm, {quant_pattern} of whole model get binarized!")
     return model
+    
 if __name__ == '__main__':
     
     # set parser

@@ -65,8 +65,9 @@ class Learner():
 
         # paths to save results
         self.log_path = f'./res/{self.exp_name}_log.csv'
-        self.model_path = f'./res/{self.exp_name}_best.pth'
         self.test_path = f'./res/{self.exp_name}_test.npy'
+        self.model_path = f'./models/{self.exp_name}_best.pth'
+        
         
         # indicator variables
         self.switch = False
