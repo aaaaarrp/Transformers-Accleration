@@ -164,30 +164,10 @@ if __name__ == '__main__':
                    'exp_name': args.exp_name
                    }
     
-    if args.latent:
-        # create baseline model as original full-precision model
-        org_model = Transformer(d_model=BASELINE_MODEL_DIM,
-                                d_ff=BASELINE_FFN_DIM,
-                                d_hidden=BASELINE_HIDDEN_DIM,
-                                h=BASELINE_MODEL_NUMBER_OF_HEADS,
-                                n_layers=BASELINE_MODEL_NUMBER_OF_LAYERS,
-                                n_class=4,
-                                vocab=tokenizer.vocab_size
-                                )
-        optim_original = Adam(org_model.parameters(), lr= 1e-4)
-        scheduler_original = MultiStepLR(optim_original, milestones=[10,15], gamma=0.1)
-        
-        # specify learning setting for original model
-        train_config['model_original'] = org_model
-        train_config['optim_original'] = optim_original
-        train_config['scheduler_original'] = scheduler_original
-        print("INFO: Start Training...")
-        
-    else:
-        print("INFO: Start Training...")
+    print("INFO: Start Training...")
 
     # training
-    learner_ag_news = Learner(train_config, ema=(args.quant_method == 'fully'),  ir=(args.quant_method == 'ir'))
+    learner_ag_news = Learner(train_config, ema=(args.quant_method == 'fully'))
     
     
     learner_ag_news.train()

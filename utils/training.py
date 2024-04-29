@@ -9,7 +9,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 class Learner():
-    def __init__(self, train_config, ema=False, ir = False):
+    def __init__(self, train_config, ema=False,):
         '''
         train_conig: a dict of {'model_original': original full-precision transformer,
                                 'model': model to use,
@@ -23,7 +23,6 @@ class Learner():
                                 'exp_name': experiment name, to distinguish different models,
                                 'epoch_start_quantization': epoch to start quantization}
         ema: indicates whether it is a fully quant model
-        ir:  indicates whether it is a ir network
         '''
         
         # training settings
@@ -72,7 +71,6 @@ class Learner():
         # indicator variables
         self.switch = False
         self.ema = ema
-        self.ir = ir
 
     def train(self):
         cudnn.benchmark = True
@@ -81,15 +79,6 @@ class Learner():
 
         for epoch in tqdm(range(epochs)):
             print('current lr {:.5e}'.format(self.optimizer.param_groups[0]['lr']))
-            
-            # ir model needs to change t value every epoch
-            if self.ir:
-                t_value = 0.1*10**(epoch/epochs*np.log(100))
-                t_value = torch.Tensor([t_value]).to(device)
-                t_value.requires_grad = False
-                print(t_value)
-                
-                change_t(self.model, t_value)
         
             if self.starting_epoch > epoch:
                 self.original_model.train()
