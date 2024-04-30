@@ -85,9 +85,9 @@ def create_model(vocab_size, quant_type=None, quant_method=None, bit_num=None, q
         assert bit_num is None, f"Bit number should not be specified in binarization, got {bit_num}!"
         
         if quant_pattern == 'ALL_QK':
-             binarize(model, 'ALL', quant_method, skip_final=True, kv_only=True)
+             model = binarize(model, 'ALL', quant_method, skip_final=True, kv_only=True)
         else:
-            binarize(model, quant_pattern, quant_method, skip_final=True)
+            model = binarize(model, quant_pattern, quant_method, skip_final=True)
         
         print(f"INFO: Creating binarized transformer with using {quant_method} binarize algorithm, {quant_pattern} of whole model get binarized!")
     return model

@@ -1,35 +1,32 @@
 import torch
-import os
-import psutil
+import torch.autograd.profiler as profiler
+from torch_api import *
 
-# Count how many trainable weights the model
+# Count how many trainable weights the model has
 def count_parameters(model):
     return sum(p.numel() for p in model.parameters() if p.requires_grad)
 
-# Count how much large memory this model uses
-def count_memory_size(model):
-    memory_dict = {torch.float32:4, torch.float64:8}
-    return sum(p.numel()*memory_dict[p.data.dtype] for p in model.parameters() if p.requires_grad)
+# byte to MB conversion
+def bytes_to_MB(bytes):
+    MB = bytes / (1024 * 1024)
+    return MB
 
-def get_model_size(model):
-    # Save model to a temporary file
-    torch.save(model.state_dict(), "../models/temp.pth")
-    # Get the size of the temporary file
-    model_size = os.path.getsize("../models/temp.pth")
-    # Delete the temporary file
-    os.remove("../models/temp.pth")
-    return model_size
+# Count how large memory this model uses
+def count_memory_size(model, mtype=None, mname=None):
+    model.initialize(model, mtype, mname)
+    total_memory = sum(
+        p.numel() * (get_default_dtype(model, mname, p)) for p in model.parameters() if p.requires_grad
+    )
+    total_memory = round(bytes_to_MB(total_memory), 1)
+    print(f"{mname}: ", total_memory, "M")
 
-def estimate_runtime_memory(model, input_shape):
-    # Estimate runtime memory using psutil to monitor memory usage during inference
-    process = psutil.Process(os.getpid())
-    before_memory = process.memory_info().rss / 1024 / 1024  # Memory usage before inference
-    
-    # Perform inference
-    with torch.no_grad():
-        model.eval()
-        input_tensor = torch.randn(input_shape).to(next(model.parameters()).device)
-        _ = model(input_tensor)
-    after_memory = process.memory_info().rss / 1024 / 1024  # Memory usage after inference
-    runtime_memory = after_memory - before_memory  # Estimated runtime memory
-    return runtime_memory
+# Count run time usage
+def get_run_time(model, inputs, masks, mtype=None, mname=None):
+    model.initialize(model, mtype, mname)
+    model(inputs, masks)
+    with profiler.profile(with_stack=False,
+                          profile_memory=True,
+                          use_cuda=torch.cuda.is_available(),
+                          with_flops=True) as prof:
+        out_prob = model(inputs, masks)
+    print(prof.key_averages(group_by_stack_n=5).table(sort_by='self_cpu_time_total'))

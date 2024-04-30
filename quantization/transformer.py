@@ -3,7 +3,8 @@ import torch.nn as nn
 import math
 from torch.autograd import Variable
 from torch.nn import functional as F
-
+from .quantize import quantizer
+from .binarize import binarize
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class Transformer(nn.Module):
@@ -49,6 +50,17 @@ class Transformer(nn.Module):
         self.n_layers = n_layers
 
         self.init_params()
+    
+    # F initialization of quantization type on transformer during runtime memory check
+    def initialize(self, model, _, mtype):
+        if(mtype == "baseline"):
+            pass
+        elif(mtype == "quantized"):
+            _ = quantizer(model)
+        elif(mtype == "binarized"):
+            _ = binarize(model, pattern='ALL', binarize_layer='basic')
+        elif(mtype == "optmized"):
+            _ = binarize(model, pattern='ALL', binarize_layer='optimize')
 
     def forward(self, x, mask=None):
         embeddings = self.input_embeddings(x)

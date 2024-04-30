@@ -161,10 +161,11 @@ def binarize(model, pattern, binarize_layer='basic', skip_final=False, qk_only=F
     Recursively replace linear layers with binary layers
     ---------
     Arguments:
-    model      - Model to be binarized
-    pattern    - Binarization pattern
-    skip_final - whether to leave final layer unbinarized
-    qk_only    - whether to only binarize Q net and K net, leaving V net
+    model           - Model to be binarized
+    pattern         - Binarization pattern
+    binarize_layer  - either 'basic' or 'optmized'
+    skip_final      - whether to leave final layer unbinarized
+    qk_only         - whether to only binarize Q net and K net, leaving V net
     ---------
     No return, the original model is binarized
     """
@@ -207,4 +208,4 @@ def binarize(model, pattern, binarize_layer='basic', skip_final=False, qk_only=F
 
             if nn.Linear in layer_types:
                 binarize(layer, 'ALL', binarize_layer, skip_final, qk_only, qv_only, kv_only)
-    return
+    return model

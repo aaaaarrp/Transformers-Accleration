@@ -1,4 +1,4 @@
-from .transformer import *
+from quantization.transformer import *
 from torch.quantization.qconfig import QConfig
 from torch.quantization.fake_quantize import FusedMovingAvgObsFakeQuantize
 from torch.quantization.observer import MovingAverageMinMaxObserver, MovingAveragePerChannelMinMaxObserver
@@ -37,7 +37,6 @@ class PositionalWiseFFN(nn.Module):
     def forward(self, x):
         return self.w_2(self.dropout(F.relu(self.w_1(x))))
 """
-
 
 class PositionalWiseFFNQuantization(nn.Module):
     def __init__(self, d_model, d_ff, dropout=0.1):
@@ -193,6 +192,38 @@ class Classifier(nn.Module):
 
 """
 
+# def cmodel(variable):
+#     if "baseline" in variables:
+
+# variables = {
+#     "baseline": torch.load("models/baseline_best.pth", map_location=torch.device(device)),
+#     "quantized": torch.load("models/quantized_best.pth", map_location=torch.device(device)),
+#     "binarized": torch.load("models/binarized_best.pth", map_location=torch.device(device)),
+#     "optmized": torch.load("models/optimized_best.pth", map_location=torch.device(device))
+# }
+
+def get_default_dtype(nn, flag, data):
+    """
+    Initializes a neural network weights with it's unique flag and returns the data type. 
+
+    Takes neural network weights, flag and data as argument.
+
+    args:
+
+        nn (class): A class object representing the neural network model. Stores the model weight and provides access to the dtype of data attribute.
+        flag (str, optional): Should be a string. Initializes model with unique identity.
+        data: Any type of dtype representation in pytorch.
+
+    """
+    memory_dict = {torch.float32: 4, torch.int8: 1}
+    dtype = {
+        "baseline": 1,
+        "quantized": 0.25,
+        "binarized": 0.06,
+        "optimized": 0.06
+    }
+
+    return (memory_dict[data.data.dtype] * dtype[flag])
 
 def quantization_classifier_training(d_model, d_hidden, n_class, fused_modules=None, k=(8, 8)):
     model = ClassifierQuant(d_model, d_hidden, n_class)
