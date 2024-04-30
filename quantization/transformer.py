@@ -52,7 +52,10 @@ class Transformer(nn.Module):
         self.init_params()
     
     # F initialization of quantization type on transformer during runtime memory check
-    def initialize(self, model, _, mtype):
+    def initialize(self, model, mpath, mtype):
+        if not mpath:
+           raise FileNotFoundError("Checkpoints not found at specified path")
+
         if(mtype == "baseline"):
             pass
         elif(mtype == "quantized"):
