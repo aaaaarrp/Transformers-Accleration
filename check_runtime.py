@@ -30,22 +30,19 @@ if __name__ == "__main__":
 
     # Load baseline mode
     baseline = torch.load("models/baseline_best.pth", map_location=torch.device(device))
-    get_run_time(model, inputs, masks, baseline, "baseline")
-    
-
     # Load Quantize model
     quantized = torch.load("models/quantized_best.pth", map_location=torch.device(device))
-    get_run_time(model, inputs, masks, quantized, "quantized")
-
-
     # Load Binarize model
     binarized = torch.load("models/binarized_best.pth", map_location=torch.device(device))
-    get_run_time(model, inputs, masks, binarized, "binarized")
-
-
     # Load optimized model
     optimized = torch.load("models/optimized_best.pth", map_location=torch.device(device))
-    get_run_time(model, inputs, masks, optimized, "optmized")
+
+
+
+    # get_run_time(model, inputs, masks, baseline, "baseline")
+    # get_run_time(model, inputs, masks, quantized, "quantized")
+    # get_run_time(model, inputs, masks, binarized, "binarized")
+    # get_run_time(model, inputs, masks, optimized, "optmized")
 
     # Get model size
     print("\nModel size - ")

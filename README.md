@@ -1,4 +1,4 @@
-# Project Description: Thresholding Binarized Neural Networks to improve accuracy in Large Language Models Training
+# Thresholding Binarized Neural Networks to improve accuracy in Large Language Models Training
 
 This repository is about conducting quantization and binarization on transformer to improve transformer models. 
 
