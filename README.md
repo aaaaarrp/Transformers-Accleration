@@ -1,9 +1,10 @@
-# Project Description: Transformer-Acceleration
-This repository is about conducting quantization and binarization on transformer to accelerate transformer models.
+# Project Description: Thresholding Binarized Neural Networks to improve accuracy in Large Language Models Training
+
+This repository is about conducting quantization and binarization on transformer to improve transformer models. 
 
 **Motivation**: Transformer is a SOTA base model for many NLP&CV tasks because of its ability to accomodate large-scale data. However, the main disadvantage of transformer is its large model size and even larger runtime memory usage. Therefore, it is important to explore diverse ways to compress model to lower hardware cost. Among diverse model compression techniques, quantization and Binarization are famous because of their simplicity of implementation, preservation of original model structure and robustness to noise.
 
-So how to explore efficient and effective quantization and binarization methods for transformer is main focus of our project, so that we can accelerate the training and it reaches a converging point faster.
+So how to explore efficient and effective quantization and binarization methods for transformer is main focus of our project, so that we can accelerate the training and it reaches a converging point faster with a better accuracy.
 
 **Goal**: We want to
 
@@ -45,7 +46,7 @@ Inside this directory, `constants.py` - some pre-defined constants for model def
 
 `train_script.py`: main function to train model w or w/o quantization
 
-`plot.ipynb`: used to plot figures
+`plot.ipynb`: used to check accuracy and plot figures
 
 # Example commands to run
 
